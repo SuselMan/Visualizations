@@ -89,12 +89,6 @@ export default function LightShadowPage() {
           </label>
         </div>
         <div className={styles.hint}>{countText}</div>
-        <div className={styles.hint}>
-          ⬤ Свет — drag (в небе).<br />
-          ⬤ Проекция — drag только вниз/вверх, но не выше горизонта; по X под светом.<br />
-          ⬤ Горизонт — drag вертикально (проекция не поднимается выше него).<br />
-          ⬤ Квадраты — drag; клик выбирает; Del — удалить; до 20 шт.
-        </div>
       </div>
     </div>
   );
