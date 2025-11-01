@@ -22,8 +22,7 @@
       "ui-kit/*": ["external/ui-kit/*"]
     }
   },
-  "include": ["src", "vite.config.ts"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src", "vite.config.ts"]
 }
 
 
