@@ -3,8 +3,8 @@
 Interactive visualizations for artists. Stack: React + TypeScript + Vite + React Konva, CSS Modules, React Router. UI via a git submodule (`external/ui-kit`).
 
 Visualizations
-- Light + Squares Shadows — интерактивный свет, горизонты, проекции и тени на квадрат.
-- Perspective Cube — 3‑точечная перспектива, перетаскиваемый горизонт, повороты по XYZ, позиция по XYZ, drag‑перемещение кубов (X/Y; с Ctrl — X/Z), линии схода (для выбранного или всех кубов).
+- Light + Squares Shadows — interactive light, horizon line, projection and shadows over squares.
+- Perspective Cube — true 3‑point perspective, draggable horizon, XYZ rotations and position, drag to move cubes (X/Y; hold Ctrl for X/Z), vanishing lines (selected or all cubes).
 
 Local development
 1) Clone with submodules
