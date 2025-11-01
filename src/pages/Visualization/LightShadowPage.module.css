@@ -43,3 +43,16 @@
 .narrowInput {
     width: 90px;
 }
+
+.dropdown {
+    width: 100px;
+}
+
+.buttons {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.btn {
+    width: 50%;
+}

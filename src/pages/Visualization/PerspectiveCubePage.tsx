@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button, Input, Toggle, ToggleDropdown } from 'ui-kit';
 import styles from './PerspectiveCubePage.module.css';
 import PerspectiveCubeCanvas, { type PerspectiveMode } from '@/visualizations/perspective/PerspectiveCubeCanvas';
+import { clsx } from 'clsx';
 
 export default function PerspectiveCubePage() {
   const [horizonY, setHorizonY] = useState(540/2);
@@ -85,11 +86,11 @@ export default function PerspectiveCubePage() {
         onChangeHorizon={setHorizonY}
       />
       <div className={styles.panel}>
-        <div className={styles.row}>
-          <Button type="secondary" onClick={addCube}>Add cube</Button>
-          <Button type="danger" onClick={removeSelected} disabled={!hasCurrent}>Delete</Button>
+        <div className={clsx(styles.row, styles.buttons)}>
+          <Button className={styles.btn} type="secondary" onClick={addCube}>Add</Button>
+          <Button className={styles.btn} type="danger" onClick={removeSelected} disabled={!hasCurrent}>Delete</Button>
         </div>
-        <div className={styles.rowCol}>
+        {/* <div className={styles.rowCol}>
           <div className={styles.label}>Current cube</div>
           <ToggleDropdown
             options={cubes.map((_, i) => String(i))}
@@ -98,7 +99,7 @@ export default function PerspectiveCubePage() {
             voc={Object.fromEntries(cubes.map((_, i) => [String(i), `Cube ${i+1}`]))}
             placeholder="Select cube"
           />
-        </div>
+        </div> */}
         <div className={styles.rowCol}>
           <div className={styles.label}>Vanishing lines</div>
           <div className={styles.row}>
@@ -108,12 +109,12 @@ export default function PerspectiveCubePage() {
           </div>
         </div>
 
-        <div className={styles.rowCol}>
+        {/* <div className={styles.rowCol}>
           <label>
             Focal length (f)
             <Input type="number" value={String(focal)} onChange={(e: any) => setFocal(clampNum(Number(e.target.value), 100, 4000))} inputClasses={styles.narrowInput} />
           </label>
-        </div>
+        </div> */}
 
         {hasCurrent ? (
           <div className={styles.rowCol}>

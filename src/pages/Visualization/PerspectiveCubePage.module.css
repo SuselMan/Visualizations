@@ -20,7 +20,7 @@
 .row {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--spacing-sm)
 }
 
 .rowCol {
@@ -41,5 +41,14 @@
 }
 
 .narrowInput {
-    width: 90px;
+    width: 65px;
+}
+
+.buttons {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.btn {
+    width: 50%;
 }
