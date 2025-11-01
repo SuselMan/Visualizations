@@ -107,7 +107,7 @@ export default function PerspectiveCubeCanvas(props: Props) {
   }, [Rc, W, H, cx, cyProj, f, cubeList, unitCube]);
 
   return (
-    <Stage width={W} height={H} onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp} style={{ background: '#fff', border: '1px solid #ccc', borderRadius: 8, boxShadow: '0 2px 10px rgba(0,0,0,.1)' }}>
+    <Stage width={W} height={H} onPointerDown={onMouseDown} onPointerMove={onMouseMove} onPointerUp={onMouseUp} style={{ background: '#fff', border: '1px solid #ccc', borderRadius: 8, boxShadow: '0 2px 10px rgba(0,0,0,.1)', touchAction: 'none' }}>
       <Layer>
         {/* horizon (drawn at user-controlled line) */}
         <Line points={[0, cyDraw, W, cyDraw]} stroke="#999" strokeWidth={2} />

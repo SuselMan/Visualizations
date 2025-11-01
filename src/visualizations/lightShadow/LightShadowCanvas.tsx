@@ -124,10 +124,10 @@ export default function LightShadowCanvas(props: Props) {
       <Stage
         width={W}
         height={H}
-        onMouseDown={(e: any) => onMouseDown(e.target.getStage()!.getPointerPosition()!)}
-        onMouseMove={(e: any) => onMouseMove(e.target.getStage()!.getPointerPosition()!)}
-        onMouseUp={onMouseUp}
-        style={{ background: '#fff', border: '1px solid #ccc', borderRadius: 8, boxShadow: '0 2px 10px rgba(0,0,0,.1)' }}
+        onPointerDown={(e: any) => onMouseDown(e.target.getStage()!.getPointerPosition()!)}
+        onPointerMove={(e: any) => onMouseMove(e.target.getStage()!.getPointerPosition()!)}
+        onPointerUp={onMouseUp}
+        style={{ background: '#fff', border: '1px solid #ccc', borderRadius: 8, boxShadow: '0 2px 10px rgba(0,0,0,.1)', touchAction: 'none' }}
       >
         <Layer>
           {/* horizon */}
