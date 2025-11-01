@@ -94,8 +94,8 @@ export default function PerspectiveCubeCanvas(props: Props) {
   const cubesData = useMemo(() => {
     return cubeList.map((cube) => {
       const rot = buildObjectRotation(cube.rotationDeg);
-      // Intrinsic XYZ (rotate around object's own axes in order X->Y->Z) equals R = Rz * Ry * Rx
-      const Robj = multiplyMatrices(multiplyMatrices(Rz(rot.rz), Ry(rot.ry)), Rx(rot.rx));
+      // Intrinsic XYZ (rotate around object's own axes X -> Y -> Z): R = Rx * Ry * Rz
+      const Robj = multiplyMatrices(multiplyMatrices(Rx(rot.rx), Ry(rot.ry)), Rz(rot.rz));
       const vertices = unitCube.map(([x, y, z]) => {
         const world = applyTransform({ x, y, z }, Robj, cube.position);
         return applyRotation(world, Rc);
