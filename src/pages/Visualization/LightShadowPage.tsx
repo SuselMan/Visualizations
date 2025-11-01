@@ -13,7 +13,7 @@ export default function LightShadowPage() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [sensitivity, setSensitivity] = useState(2.5);
 
-  const countText = useMemo(() => `Квадратов: ${squares.length} / ${MAX_SQUARES}`, [squares.length]);
+  const countText = useMemo(() => `Squares: ${squares.length} / ${MAX_SQUARES}`, [squares.length]);
 
   const addSquare = () => {
     if (squares.length >= MAX_SQUARES) return;
@@ -58,30 +58,31 @@ export default function LightShadowPage() {
       />
       <div className={styles.panel}>
         <div className={styles.row}>
-          <Button onClick={addSquare} disabled={squares.length >= MAX_SQUARES}>Добавить квадрат</Button>
-          <Button onClick={deleteSelected} type="secondary" disabled={!squares.length}>Удалить выбранный</Button>
+          <Button onClick={addSquare} disabled={squares.length >= MAX_SQUARES}>Add square</Button>
+          <Button onClick={deleteSelected} type="secondary" disabled={!squares.length}>Delete selected</Button>
         </div>
         <div className={styles.rowCol}>
           <label>
-            Текущий квадрат
+            Current square
             <ToggleDropdown
+              className={styles.dropdown}
               options={squares.map((_, i) => String(i))}
               current={String(selectedIndex)}
               onChange={((opt: string) => setSelectedIndex(Number(opt))) as any}
-              placeholder="Выбрать квадрат"
-              voc={Object.fromEntries(squares.map((_, i) => [String(i), `Квадрат ${i+1}`]))}
+              placeholder="Select square"
+              voc={Object.fromEntries(squares.map((_, i) => [String(i), `Square ${i+1}`]))}
             />
           </label>
         </div>
         <div className={styles.rowCol}>
           <label>
-            Размер выбранного
+            Selected size
             <Input type="number" value={String(squares[selectedIndex]?.size ?? 100)} onChange={(e: any) => setSizeForSelected(Number(e.target.value))} inputClasses={styles.narrowInput} />
           </label>
         </div>
         <div className={styles.rowCol}>
           <label>
-            Чувствительность роста кружков
+            Circle growth sensitivity
             <div className={styles.row}>
               <input type="range" min={0} max={4} step={0.1} value={sensitivity} onChange={(e) => setSensitivity(Number(e.target.value))} />
               <span className={styles.mono}>{sensitivity.toFixed(1)}×</span>

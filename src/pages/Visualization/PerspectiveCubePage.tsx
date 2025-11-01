@@ -90,34 +90,34 @@ export default function PerspectiveCubePage() {
           <Button type="danger" onClick={removeSelected} disabled={!hasCurrent}>Delete</Button>
         </div>
         <div className={styles.rowCol}>
-          <div className={styles.label}>Текущий куб</div>
+          <div className={styles.label}>Current cube</div>
           <ToggleDropdown
             options={cubes.map((_, i) => String(i))}
             current={cubes.length ? String(selectedIndex) : ''}
             onChange={((opt: string) => setSelectedIndex(Number(opt))) as any}
-            voc={Object.fromEntries(cubes.map((_, i) => [String(i), `Куб ${i+1}`]))}
-            placeholder="Выбрать куб"
+            voc={Object.fromEntries(cubes.map((_, i) => [String(i), `Cube ${i+1}`]))}
+            placeholder="Select cube"
           />
         </div>
         <div className={styles.rowCol}>
-          <div className={styles.label}>Линии схождения</div>
+          <div className={styles.label}>Vanishing lines</div>
           <div className={styles.row}>
-            <span>Только выбранный</span>
+            <span>Selected only</span>
             <Toggle checked={onlySelectedExtensions} callback={() => setOnlySelectedExtensions(!onlySelectedExtensions)} />
-            <span>Для всех</span>
+            <span>All cubes</span>
           </div>
         </div>
 
         <div className={styles.rowCol}>
           <label>
-            Фокусное расстояние (f)
+            Focal length (f)
             <Input type="number" value={String(focal)} onChange={(e: any) => setFocal(clampNum(Number(e.target.value), 100, 4000))} inputClasses={styles.narrowInput} />
           </label>
         </div>
 
         {hasCurrent ? (
           <div className={styles.rowCol}>
-            <div className={styles.label}>Повороты (XYZ)</div>
+            <div className={styles.label}>Rotations (XYZ)</div>
             <label>
               X
               <input type="range" min={0} max={360} step={1} value={current!.rotationDeg.x} onChange={(e) => updateRotation('x', Number(e.target.value))} />
@@ -137,7 +137,7 @@ export default function PerspectiveCubePage() {
 
         {hasCurrent && (
           <div className={styles.rowCol}>
-            <div className={styles.label}>Позиция (x,y,z)</div>
+            <div className={styles.label}>Position (x,y,z)</div>
             <div className={styles.row}>
               <Input type="number" value={String(current!.position.x)} onChange={(e: any) => updatePosition('x', Number(e.target.value))} inputClasses={styles.narrowInput} />
               <Input type="number" value={String(current!.position.y)} onChange={(e: any) => updatePosition('y', Number(e.target.value))} inputClasses={styles.narrowInput} />
@@ -147,7 +147,7 @@ export default function PerspectiveCubePage() {
         )}
 
         <div className={styles.row}>
-          <Button type="secondary" onClick={() => { if (hasCurrent) resetCurrent(); setFocal(800); }} disabled={!hasCurrent}>Сброс</Button>
+          <Button type="secondary" onClick={() => { if (hasCurrent) resetCurrent(); setFocal(800); }} disabled={!hasCurrent}>Reset</Button>
         </div>
 
         

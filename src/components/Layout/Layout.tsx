@@ -11,7 +11,7 @@ export default function Layout({ children }: PropsWithChildren) {
           <div className={styles.title}>Visualizations</div>
           <div>
             <Link to="/">
-              <Button type="secondary">Домой</Button>
+              <Button type="secondary">Home</Button>
             </Link>
           </div>
         </header>

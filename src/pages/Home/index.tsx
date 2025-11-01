@@ -7,21 +7,21 @@ export default function Home() {
       <Card>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <div style={{ fontWeight: 600 }}>Light + Squares Shadows</div>
-          <div style={{ color: '#555' }}>Интерактивная визуализация света, горизонта и теней.</div>
+          <div style={{ color: '#555' }}>Interactive visualization of light, horizon, and shadows.</div>
           <div>
             <Link to="/visualizations/light-shadow">
-              <Button>Открыть</Button>
+              <Button>Open</Button>
             </Link>
           </div>
         </div>
       </Card>
       <Card>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <div style={{ fontWeight: 600 }}>Perspective Cube (2/3 точки)</div>
-          <div style={{ color: '#555' }}>Куб с поворотами по осям, перетаскиваемый горизонт, линии к точкам схода.</div>
+          <div style={{ fontWeight: 600 }}>Perspective Cube (2/3‑point)</div>
+          <div style={{ color: '#555' }}>Cube with XYZ rotations, draggable horizon, and vanishing lines.</div>
           <div>
             <Link to="/visualizations/perspective-cube">
-              <Button>Открыть</Button>
+              <Button>Open</Button>
             </Link>
           </div>
         </div>
