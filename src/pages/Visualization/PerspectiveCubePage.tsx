@@ -150,9 +150,7 @@ export default function PerspectiveCubePage() {
           <Button type="secondary" onClick={() => { if (hasCurrent) resetCurrent(); setFocal(800); }} disabled={!hasCurrent}>Сброс</Button>
         </div>
 
-        <div className={styles.hint}>
-          Горизонт — drag вертикально. В 2-точечной перспективе вертикали остаются параллельными; в 3-точечной — сходятся.
-        </div>
+        
       </div>
     </div>
   );
