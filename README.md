@@ -8,9 +8,9 @@ Visualizations
 
 Previews
 
-![Light + Squares Shadows](src/public/shadows.png)
+<img src="src/public/shadows.png" alt="Light + Squares Shadows" width="480" />
 
-![Perspective Cube](src/public/cube.png)
+<img src="src/public/cube.png" alt="Perspective Cube" width="480" />
 
 Local development
 1) Clone with submodules
