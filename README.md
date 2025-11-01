@@ -6,6 +6,12 @@ Visualizations
 - Light + Squares Shadows — interactive light, horizon line, projection and shadows over squares.
 - Perspective Cube — true 3‑point perspective, draggable horizon, XYZ rotations and position, drag to move cubes (X/Y; hold Ctrl for X/Z), vanishing lines (selected or all cubes).
 
+Previews
+
+![Light + Squares Shadows](src/public/shadows.png)
+
+![Perspective Cube](src/public/cube.png)
+
 Local development
 1) Clone with submodules
    git clone --recurse-submodules git@github.com:SuselMan/Visualizations.git
