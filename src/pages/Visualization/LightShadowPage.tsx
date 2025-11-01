@@ -76,7 +76,7 @@ export default function LightShadowPage() {
         <div className={styles.rowCol}>
           <label>
             Размер выбранного
-            <Input type="number" value={String(squares[selectedIndex]?.size ?? 100)} onChange={(e: any) => setSizeForSelected(Number(e.target.value))} />
+            <Input type="number" value={String(squares[selectedIndex]?.size ?? 100)} onChange={(e: any) => setSizeForSelected(Number(e.target.value))} inputClasses={styles.narrowInput} />
           </label>
         </div>
         <div className={styles.rowCol}>

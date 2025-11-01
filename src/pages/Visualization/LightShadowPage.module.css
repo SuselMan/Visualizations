@@ -39,3 +39,7 @@
     font-variant-numeric: tabular-nums;
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
+
+.narrowInput {
+    width: 90px;
+}

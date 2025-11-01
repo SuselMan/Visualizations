@@ -111,7 +111,7 @@ export default function PerspectiveCubePage() {
         <div className={styles.rowCol}>
           <label>
             Фокусное расстояние (f)
-            <Input type="number" value={String(focal)} onChange={(e: any) => setFocal(clampNum(Number(e.target.value), 100, 4000))} />
+            <Input type="number" value={String(focal)} onChange={(e: any) => setFocal(clampNum(Number(e.target.value), 100, 4000))} inputClasses={styles.narrowInput} />
           </label>
         </div>
 
@@ -139,9 +139,9 @@ export default function PerspectiveCubePage() {
           <div className={styles.rowCol}>
             <div className={styles.label}>Позиция (x,y,z)</div>
             <div className={styles.row}>
-              <Input type="number" value={String(current!.position.x)} onChange={(e: any) => updatePosition('x', Number(e.target.value))} />
-              <Input type="number" value={String(current!.position.y)} onChange={(e: any) => updatePosition('y', Number(e.target.value))} />
-              <Input type="number" value={String(current!.position.z)} onChange={(e: any) => updatePosition('z', Number(e.target.value))} />
+              <Input type="number" value={String(current!.position.x)} onChange={(e: any) => updatePosition('x', Number(e.target.value))} inputClasses={styles.narrowInput} />
+              <Input type="number" value={String(current!.position.y)} onChange={(e: any) => updatePosition('y', Number(e.target.value))} inputClasses={styles.narrowInput} />
+              <Input type="number" value={String(current!.position.z)} onChange={(e: any) => updatePosition('z', Number(e.target.value))} inputClasses={styles.narrowInput} />
             </div>
           </div>
         )}
