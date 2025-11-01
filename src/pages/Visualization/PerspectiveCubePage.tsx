@@ -4,13 +4,32 @@ import styles from './PerspectiveCubePage.module.css';
 import PerspectiveCubeCanvas, { type PerspectiveMode } from '@/visualizations/perspective/PerspectiveCubeCanvas';
 import { clsx } from 'clsx';
 
+type Q = { w: number; x: number; y: number; z: number };
+function toRad(deg: number) { return (deg * Math.PI) / 180; }
+function quatFromAxis(axis: 'x' | 'y' | 'z', angleRad: number): Q {
+  const h = angleRad * 0.5;
+  const s = Math.sin(h);
+  const c = Math.cos(h);
+  if (axis === 'x') return { w: c, x: s, y: 0, z: 0 };
+  if (axis === 'y') return { w: c, x: 0, y: s, z: 0 };
+  return { w: c, x: 0, y: 0, z: s };
+}
+function mulQuat(a: Q, b: Q): Q {
+  return {
+    w: a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z,
+    x: a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,
+    y: a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,
+    z: a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w,
+  };
+}
+
 export default function PerspectiveCubePage() {
   const [horizonY, setHorizonY] = useState(540/2);
   const mode: PerspectiveMode = 'three-point';
   const [focal, setFocal] = useState(800);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [cubes, setCubes] = useState([
-    { rotationDeg: { x: 0, y: 0, z: 0 }, position: { x: 0, y: 0, z: 800 } },
+    { rotationDeg: { x: 0, y: 0, z: 0 }, position: { x: 0, y: 0, z: 800 }, q: { w: 1, x: 0, y: 0, z: 0 } as Q },
   ]);
   const [onlySelectedExtensions, setOnlySelectedExtensions] = useState(false);
 
@@ -24,6 +43,13 @@ export default function PerspectiveCubePage() {
     setCubes(prev => {
       const next = prev.slice();
       const c = { ...next[selectedIndex] };
+      const prevDeg = c.rotationDeg[axis] as number;
+      const deltaDeg = value - prevDeg;
+      const deltaRad = toRad(deltaDeg);
+      const deltaQ = quatFromAxis(axis, deltaRad);
+      const currQ = c.q ?? ({ w: 1, x: 0, y: 0, z: 0 } as Q);
+      // apply local-axis rotation: q = q ⊗ deltaQ
+      c.q = mulQuat(currQ, deltaQ);
       c.rotationDeg = { ...c.rotationDeg, [axis]: value } as any;
       next[selectedIndex] = c;
       return next;
@@ -43,7 +69,7 @@ export default function PerspectiveCubePage() {
   function resetCurrent() {
     setCubes(prev => {
       const next = prev.slice();
-      next[selectedIndex] = { rotationDeg: { x: 0, y: 0, z: 0 }, position: { x: 0, y: 0, z: 800 } };
+      next[selectedIndex] = { rotationDeg: { x: 0, y: 0, z: 0 }, position: { x: 0, y: 0, z: 800 }, q: { w: 1, x: 0, y: 0, z: 0 } };
       return next;
     });
   }
@@ -54,7 +80,7 @@ export default function PerspectiveCubePage() {
       const nx = -200 + (idx % 5) * 100;
       const ny = 75;
       const nz = 700 + (idx % 4) * 80;
-      const next = [...prev, { rotationDeg: { x: 0, y: 0, z: 0 }, position: { x: nx, y: ny, z: nz } }];
+      const next = [...prev, { rotationDeg: { x: 0, y: 0, z: 0 }, position: { x: nx, y: ny, z: nz }, q: { w: 1, x: 0, y: 0, z: 0 } }];
       setSelectedIndex(next.length - 1);
       return next;
     });
@@ -80,7 +106,7 @@ export default function PerspectiveCubePage() {
         cubes={cubes}
         selectedIndex={selectedIndex}
         onSelectIndex={setSelectedIndex}
-        onCubesChange={setCubes}
+        onCubesChange={(next) => setCubes(next.map((c: any) => ({ ...c, q: c.q ?? { w: 1, x: 0, y: 0, z: 0 } })))}
         onlySelectedExtensions={onlySelectedExtensions}
         horizonY={horizonY}
         onChangeHorizon={setHorizonY}

@@ -11,10 +11,11 @@ type Props = {
   cubes: Array<{
     rotationDeg: { x: number; y: number; z: number };
     position: { x: number; y: number; z: number };
+    q?: Q;
   }>;
   selectedIndex?: number;
   onSelectIndex?: (index: number) => void;
-  onCubesChange?: (next: Props['cubes']) => void;
+  onCubesChange?: (next: Array<{ rotationDeg: { x: number; y: number; z: number }; position: { x: number; y: number; z: number }; q?: Q }>) => void;
   onlySelectedExtensions?: boolean;
   onChangeHorizon: (y: number) => void;
   horizonY: number;
@@ -93,14 +94,17 @@ export default function PerspectiveCubeCanvas(props: Props) {
   // Precompute per-cube projected points and extended lines
   const cubesData = useMemo(() => {
     return cubeList.map((cube) => {
-      const rot = buildObjectRotation(cube.rotationDeg);
-      // Build rotation via quaternions to ensure intrinsic local XYZ behavior
-      const qx = quatFromAxis('x', rot.rx);
-      const qy = quatFromAxis('y', rot.ry);
-      const qz = quatFromAxis('z', rot.rz);
-      // intrinsic X->Y->Z: q = qz ⊗ qy ⊗ qx (apply X, then Y, then Z about local axes)
-      const q = mulQuat(mulQuat(qz, qy), qx);
-      const Robj = quatToMat3(q);
+      let Robj: M3;
+      if ((cube as any).q) {
+        Robj = quatToMat3((cube as any).q);
+      } else {
+        const rot = buildObjectRotation(cube.rotationDeg);
+        const qx = quatFromAxis('x', rot.rx);
+        const qy = quatFromAxis('y', rot.ry);
+        const qz = quatFromAxis('z', rot.rz);
+        const q = mulQuat(mulQuat(qz, qy), qx);
+        Robj = quatToMat3(q);
+      }
       const vertices = unitCube.map(([x, y, z]) => {
         const world = applyTransform({ x, y, z }, Robj, cube.position);
         return applyRotation(world, Rc);
