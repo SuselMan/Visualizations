@@ -94,8 +94,13 @@ export default function PerspectiveCubeCanvas(props: Props) {
   const cubesData = useMemo(() => {
     return cubeList.map((cube) => {
       const rot = buildObjectRotation(cube.rotationDeg);
-      // Intrinsic XYZ (rotate around object's own axes X -> Y -> Z): R = Rx * Ry * Rz
-      const Robj = multiplyMatrices(multiplyMatrices(Rx(rot.rx), Ry(rot.ry)), Rz(rot.rz));
+      // Build rotation via quaternions to ensure intrinsic local XYZ behavior
+      const qx = quatFromAxis('x', rot.rx);
+      const qy = quatFromAxis('y', rot.ry);
+      const qz = quatFromAxis('z', rot.rz);
+      // intrinsic X->Y->Z: q = qz ⊗ qy ⊗ qx (apply X, then Y, then Z about local axes)
+      const q = mulQuat(mulQuat(qz, qy), qx);
+      const Robj = quatToMat3(q);
       const vertices = unitCube.map(([x, y, z]) => {
         const world = applyTransform({ x, y, z }, Robj, cube.position);
         return applyRotation(world, Rc);
@@ -220,6 +225,36 @@ function projectPoint(p: V3, cx: number, cy: number, f: number) {
   // simple pinhole camera looking along -Z; assume p.z > 1 to avoid flip
   const z = p.z || 1e-6;
   return { x: cx + f * (p.x / z), y: cy + f * (p.y / z) };
+}
+
+// Quaternion helpers for robust intrinsic rotations
+type Q = { w: number; x: number; y: number; z: number };
+function quatFromAxis(axis: 'x' | 'y' | 'z', angleRad: number): Q {
+  const h = angleRad * 0.5;
+  const s = Math.sin(h);
+  const c = Math.cos(h);
+  if (axis === 'x') return { w: c, x: s, y: 0, z: 0 };
+  if (axis === 'y') return { w: c, x: 0, y: s, z: 0 };
+  return { w: c, x: 0, y: 0, z: s };
+}
+function mulQuat(a: Q, b: Q): Q {
+  return {
+    w: a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z,
+    x: a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,
+    y: a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,
+    z: a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w,
+  };
+}
+function quatToMat3(q: Q): M3 {
+  const { w, x, y, z } = q;
+  const xx = x * x, yy = y * y, zz = z * z;
+  const xy = x * y, xz = x * z, yz = y * z;
+  const wx = w * x, wy = w * y, wz = w * z;
+  return [
+    1 - 2 * (yy + zz), 2 * (xy - wz),     2 * (xz + wy),
+    2 * (xy + wz),     1 - 2 * (xx + zz), 2 * (yz - wx),
+    2 * (xz - wy),     2 * (yz + wx),     1 - 2 * (xx + yy),
+  ];
 }
 
 function extendLineToRect(p1: { x: number; y: number }, p2: { x: number; y: number }, W: number, H: number) {
