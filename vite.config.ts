@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
+  base: '/Visualizations/',
   plugins: [react(), svgr()],
   resolve: {
     alias: {
