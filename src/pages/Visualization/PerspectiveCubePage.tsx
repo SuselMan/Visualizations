@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Button, Input, Toggle, ToggleDropdown } from 'ui-kit';
 import styles from './PerspectiveCubePage.module.css';
 import PerspectiveCubeCanvas, { type PerspectiveMode } from '@/visualizations/perspective/PerspectiveCubeCanvas';
@@ -94,7 +94,7 @@ export default function PerspectiveCubePage() {
           <ToggleDropdown
             options={cubes.map((_, i) => String(i))}
             current={cubes.length ? String(selectedIndex) : ''}
-            onChange={(opt: string) => setSelectedIndex(Number(opt))}
+            onChange={((opt: string) => setSelectedIndex(Number(opt))) as any}
             voc={Object.fromEntries(cubes.map((_, i) => [String(i), `Куб ${i+1}`]))}
             placeholder="Выбрать куб"
           />

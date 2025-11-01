@@ -67,7 +67,7 @@ export default function LightShadowPage() {
             <ToggleDropdown
               options={squares.map((_, i) => String(i))}
               current={String(selectedIndex)}
-              onChange={(opt: string) => setSelectedIndex(Number(opt))}
+              onChange={((opt: string) => setSelectedIndex(Number(opt))) as any}
               placeholder="Выбрать квадрат"
               voc={Object.fromEntries(squares.map((_, i) => [String(i), `Квадрат ${i+1}`]))}
             />

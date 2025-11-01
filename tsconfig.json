@@ -18,7 +18,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "ui-kit/*": ["external/ui-kit/src/*"]
+      "ui-kit": ["external/ui-kit/index.ts"],
+      "ui-kit/*": ["external/ui-kit/*"]
     }
   },
   "include": ["src", "vite.config.ts"],

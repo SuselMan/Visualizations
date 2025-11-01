@@ -266,18 +266,7 @@ function hitSquareAt(x: number, y: number, squares: Square[]) {
   return -1;
 }
 
-function lineLineIntersection(p1: { x: number; y: number }, p2: { x: number; y: number }, p3: { x: number; y: number }, p4: { x: number; y: number }) {
-  const x1 = p1.x, y1 = p1.y;
-  const x2 = p2.x, y2 = p2.y;
-  const x3 = p3.x, y3 = p3.y;
-  const x4 = p4.x, y4 = p4.y;
-  const den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-  if (Math.abs(den) < 1e-9) return null as { x: number; y: number } | null;
-  const px = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / den;
-  const py = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / den;
-  if (!isFinite(px) || !isFinite(py)) return null;
-  return { x: px, y: py };
-}
+// (line-line intersection removed; we use directed ray intersections instead)
 
 function clamp(v: number, a: number, b: number) {
   return Math.max(a, Math.min(b, v));
