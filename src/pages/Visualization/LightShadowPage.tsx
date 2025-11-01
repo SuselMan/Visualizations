@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Button, Input, ToggleDropdown } from 'ui-kit';
 import styles from './LightShadowPage.module.css';
 import LightShadowCanvas, { type Square } from '@/visualizations/lightShadow/LightShadowCanvas';
+import clsx from 'clsx';
 
 const MAX_SQUARES = 20;
 
@@ -57,22 +58,19 @@ export default function LightShadowPage() {
         onSensitivityChange={setSensitivity}
       />
       <div className={styles.panel}>
-        <div className={styles.row}>
-          <Button onClick={addSquare} disabled={squares.length >= MAX_SQUARES}>Add square</Button>
-          <Button onClick={deleteSelected} type="secondary" disabled={!squares.length}>Delete selected</Button>
+        <div className={clsx(styles.row, styles.buttons)}>
+          <Button className={styles.btn} onClick={addSquare} type="secondary"  disabled={squares.length >= MAX_SQUARES}>Add</Button>
+          <Button className={styles.btn} onClick={deleteSelected} type="danger" disabled={!squares.length}>Delete</Button>
         </div>
         <div className={styles.rowCol}>
-          <label>
-            Current square
-            <ToggleDropdown
+          {/* <ToggleDropdown
               className={styles.dropdown}
               options={squares.map((_, i) => String(i))}
               current={String(selectedIndex)}
               onChange={((opt: string) => setSelectedIndex(Number(opt))) as any}
               placeholder="Select square"
               voc={Object.fromEntries(squares.map((_, i) => [String(i), `Square ${i+1}`]))}
-            />
-          </label>
+            /> */}
         </div>
         <div className={styles.rowCol}>
           <label>
@@ -84,7 +82,7 @@ export default function LightShadowPage() {
           <label>
             Circle growth sensitivity
             <div className={styles.row}>
-              <input type="range" min={0} max={4} step={0.1} value={sensitivity} onChange={(e) => setSensitivity(Number(e.target.value))} />
+              <input type="range" min={0} max={20} step={0.1} value={sensitivity} onChange={(e) => setSensitivity(clamp(Number(e.target.value), 0, 20))} />
               <span className={styles.mono}>{sensitivity.toFixed(1)}×</span>
             </div>
           </label>
