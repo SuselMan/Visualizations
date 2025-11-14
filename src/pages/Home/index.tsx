@@ -25,6 +25,14 @@ export default function Home() {
           </div>
         </Card>
       </Link>
+      <Link to="/visualizations/ellipse-practice" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <Card className={styles.clickable}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ fontWeight: 600 }}>Ellipse in Perspective</div>
+            <div style={{ color: '#555' }}>Draw an ellipse inside a perspective square; get accuracy score vs expected.</div>
+          </div>
+        </Card>
+      </Link>
     </div>
   );
 }
