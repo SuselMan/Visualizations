@@ -8,6 +8,7 @@ export default defineConfig({
   base: '/Visualizations/',
   plugins: [react(), svgr()],
   resolve: {
+    dedupe: ['three'],
     alias: {
       '@': path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'src'),
       'ui-kit': path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'external/ui-kit'),
