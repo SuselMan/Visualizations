@@ -12,7 +12,6 @@ export default defineConfig({
       'three',
       'three/examples/jsm/controls/OrbitControls.js',
       'three/examples/jsm/controls/TransformControls.js',
-      'three-stdlib',
       'three-mesh-bvh',
       'three-bvh-csg',
     ],
