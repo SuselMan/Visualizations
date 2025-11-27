@@ -17,7 +17,7 @@ type Props = {
   onSceneChange?: () => void;
   showIntersections?: boolean;
   mode?: 'camera' | 'translate' | 'rotate' | 'scale';
-  onSelectionChange?: (sel: { id: string | null; kind?: string }) => void;
+  onSelectionChange?: (sel: { id: string | null; kind?: string; pos?: { x: number; y: number; z: number }; rotDeg?: { x: number; y: number; z: number }; scale?: number }) => void;
 };
 
 export default function Wireframe3D({ width: W, height: H, onSceneChange, showIntersections = true, mode = 'camera', onSelectionChange }: Props) {
@@ -138,6 +138,39 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
     return () => window.removeEventListener('wireframe-add-shape', handler);
   }, []);
 
+  // listen to external requests to set transforms
+  useEffect(() => {
+    const handler = (e: any) => {
+      const detail = e?.detail || {};
+      const id: string | null = detail.id ?? selectedId;
+      if (!id) return;
+      const item = items.find(i => i.id === id);
+      if (!item) return;
+      const m = item.mesh;
+      if (detail.pos) {
+        const p = detail.pos;
+        m.position.set(Number(p.x) || 0, Number(p.y) || 0, Number(p.z) || 0);
+      }
+      if (detail.rotDeg) {
+        const r = detail.rotDeg;
+        m.rotation.set(
+          ((Number(r.x) || 0) * Math.PI) / 180,
+          ((Number(r.y) || 0) * Math.PI) / 180,
+          ((Number(r.z) || 0) * Math.PI) / 180
+        );
+      }
+      if (typeof detail.scale === 'number') {
+        const s = detail.scale;
+        m.scale.set(s, s, s);
+      }
+      m.updateMatrixWorld(true);
+      setItems(prev => [...prev]); // trigger rerender/effect recompute
+      if (onSceneChange) onSceneChange();
+    };
+    window.addEventListener('wireframe-set-transform', handler);
+    return () => window.removeEventListener('wireframe-set-transform', handler);
+  }, [items, selectedId, onSceneChange]);
+
   // selection + transform
   useEffect(() => {
     const transform = transformRef.current!;
@@ -248,7 +281,15 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
         const found = items.find(i => i.mesh === root);
         if (found) {
           setSelectedId(found.id);
-          onSelectionChange && onSelectionChange({ id: found.id, kind: found.kind });
+          const m = found.mesh;
+          onSelectionChange &&
+            onSelectionChange({
+              id: found.id,
+              kind: found.kind,
+              pos: { x: m.position.x, y: m.position.y, z: m.position.z },
+              rotDeg: { x: (m.rotation.x * 180) / Math.PI, y: (m.rotation.y * 180) / Math.PI, z: (m.rotation.z * 180) / Math.PI },
+              scale: m.scale?.x ?? 1
+            });
         } else {
           onSelectionChange && onSelectionChange({ id: null });
         }
