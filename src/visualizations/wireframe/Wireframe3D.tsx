@@ -49,7 +49,7 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
     orbit.enablePan = true;
     orbit.enableZoom = true;
     const transform = new TransformControls(camera, renderer.domElement);
-    transform.setSize(0.9);
+    transform.setSize(1.2);
     (transform as any).addEventListener('dragging-changed', (e: any) => {
       // Keep orbit disabled in object modes; enable only in camera mode
       orbit.enabled = (modeRef.current === 'camera');
@@ -152,6 +152,12 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
       transform.visible = true;
     }
   }, [selectedId, items, mode]);
+
+  // sync orbit enabled with mode
+  useEffect(() => {
+    const orbit = orbitRef.current;
+    if (orbit) orbit.enabled = (mode === 'camera');
+  }, [mode]);
 
   // keyboard: 1 translate, 2 rotate, 3 scale
   useEffect(() => {

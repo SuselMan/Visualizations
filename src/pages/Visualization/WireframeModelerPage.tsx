@@ -54,6 +54,12 @@ export default function WireframeModelerPage() {
         <div className={styles.rowCol}>
           <div className={styles.label}>Selected</div>
           <div>{selected.id ? `${selected.kind} (${selected.id})` : 'None'}</div>
+          <div className={styles.row}>
+            <Button type={mode === 'camera' ? 'active' : 'secondary'} onClick={() => setMode('camera')}>Camera</Button>
+            <Button type={mode === 'translate' ? 'active' : 'secondary'} onClick={() => setMode('translate')} disabled={!selected.id}>Move</Button>
+            <Button type={mode === 'rotate' ? 'active' : 'secondary'} onClick={() => setMode('rotate')} disabled={!selected.id}>Rotate</Button>
+            <Button type={mode === 'scale' ? 'active' : 'secondary'} onClick={() => setMode('scale')} disabled={!selected.id}>Scale</Button>
+          </div>
         </div>
         <div className={styles.rowCol}>
           <div className={styles.label}>Controls</div>
