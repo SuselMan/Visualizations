@@ -236,27 +236,50 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
         const csg: any = await import('three-bvh-csg');
         for (let i = 0; i < items.length; i++) {
           for (let j = i + 1; j < items.length; j++) {
-            // bake world transforms into geometry for robust CSG
             const srcA = items[i].mesh;
             const srcB = items[j].mesh;
             srcA.updateMatrixWorld(true);
             srcB.updateMatrixWorld(true);
-            const geoA: any = (srcA.geometry ?? srcA.children?.[0]?.geometry)?.clone();
-            const geoB: any = (srcB.geometry ?? srcB.children?.[0]?.geometry)?.clone();
-            if (!geoA || !geoB) continue;
-            geoA.applyMatrix4(srcA.matrixWorld);
-            geoB.applyMatrix4(srcB.matrixWorld);
-            const a = new THREE.Mesh(geoA, new THREE.MeshBasicMaterial({ color: 0xffffff }));
-            const b = new THREE.Mesh(geoB, new THREE.MeshBasicMaterial({ color: 0xffffff }));
-            const inter = csg.intersect ? csg.intersect(a, b) : (csg.CSG ? csg.CSG.intersect(a, b) : null);
-            if (inter && (inter as any).geometry) {
-              const g = (inter as any).geometry;
-              // show all edge segments (threshold 0 to avoid skipping shallow angles)
-              const edges = new THREE.EdgesGeometry(g, 0);
-              const mat = new THREE.LineBasicMaterial({ color: 0xff2d2d, linewidth: 3, depthTest: false, depthWrite: false, transparent: true, opacity: 1 });
-              const line = new THREE.LineSegments(edges, mat);
-              (line as any).renderOrder = 998;
-              ig.add(line);
+            // Get solid geometry baked into world space
+            const pickGeo = (m: any) => (m.geometry ?? m.children?.find((c: any) => c.geometry)?.geometry);
+            const gA: any = pickGeo(srcA)?.clone();
+            const gB: any = pickGeo(srcB)?.clone();
+            if (!gA || !gB) continue;
+            gA.applyMatrix4(srcA.matrixWorld);
+            gB.applyMatrix4(srcB.matrixWorld);
+
+            // Try Evaluator path first (more robust)
+            let interEdges: THREE.LineSegments | null = null;
+            if (csg.Evaluator && csg.Brush && (csg as any).INTERSECTION !== undefined) {
+              try {
+                const A = csg.Brush.fromGeometry(gA);
+                const B = csg.Brush.fromGeometry(gB);
+                const evaluator = new csg.Evaluator();
+                const resBrush = evaluator.evaluate(A, B, (csg as any).INTERSECTION);
+                const resMesh = csg.Brush.toMesh(resBrush, new THREE.MeshBasicMaterial());
+                if (resMesh?.geometry) {
+                  const edges = new THREE.EdgesGeometry(resMesh.geometry, 0);
+                  const mat = new THREE.LineBasicMaterial({ color: 0xff2d2d, linewidth: 3, depthTest: false, depthWrite: false, transparent: true, opacity: 1 });
+                  interEdges = new THREE.LineSegments(edges, mat);
+                }
+              } catch {}
+            }
+
+            // Fallback to older API if needed
+            if (!interEdges) {
+              const a = new THREE.Mesh(gA, new THREE.MeshBasicMaterial());
+              const b = new THREE.Mesh(gB, new THREE.MeshBasicMaterial());
+              const inter = csg.intersect ? csg.intersect(a, b) : (csg.CSG ? csg.CSG.intersect(a, b) : null);
+              if (inter && (inter as any).geometry) {
+                const edges = new THREE.EdgesGeometry((inter as any).geometry, 0);
+                const mat = new THREE.LineBasicMaterial({ color: 0xff2d2d, linewidth: 3, depthTest: false, depthWrite: false, transparent: true, opacity: 1 });
+                interEdges = new THREE.LineSegments(edges, mat);
+              }
+            }
+
+            if (interEdges) {
+              (interEdges as any).renderOrder = 998;
+              ig.add(interEdges);
             }
           }
         }
