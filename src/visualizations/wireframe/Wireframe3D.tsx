@@ -55,6 +55,15 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
       orbit.enabled = (modeRef.current === 'camera');
     });
     scene.add(transform);
+    // ensure gizmo always visible on top
+    (transform as any).traverse?.((obj: any) => {
+      if (obj && obj.material) {
+        obj.material.depthTest = false;
+        obj.material.transparent = true;
+        obj.material.opacity = 1.0;
+        obj.renderOrder = 999;
+      }
+    });
     const grid = new THREE.GridHelper(2000, 40, 0xcccccc, 0xeaeaea);
     (grid.material as any).transparent = true;
     (grid.material as any).opacity = 0.6;
