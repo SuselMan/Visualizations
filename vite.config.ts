@@ -12,11 +12,14 @@ export default defineConfig({
       'three',
       'three/examples/jsm/controls/OrbitControls.js',
       'three/examples/jsm/controls/TransformControls.js',
+      'three-mesh-bvh',
+      'three-bvh-csg',
     ],
   },
   resolve: {
     dedupe: ['three'],
     alias: {
+      'three': path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'node_modules/three'),
       '@': path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'src'),
       'ui-kit': path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'external/ui-kit'),
     },
