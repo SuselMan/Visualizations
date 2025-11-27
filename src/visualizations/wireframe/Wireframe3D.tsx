@@ -25,6 +25,7 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
   const [items, setItems] = useState<Item[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const modeRef = useRef(mode);
+  const [rev, setRev] = useState(0);
   const sceneRef = useRef<any>(null);
   const rendererRef = useRef<any>(null);
   const cameraRef = useRef<any>(null);
@@ -53,6 +54,11 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
     (transform as any).addEventListener('dragging-changed', (e: any) => {
       // Keep orbit disabled in object modes; enable only in camera mode
       orbit.enabled = (modeRef.current === 'camera');
+    });
+    (transform as any).addEventListener('objectChange', () => {
+      // trigger intersection recompute
+      setRev(r => r + 1);
+      if (onSceneChange) onSceneChange();
     });
     scene.add(transform);
     // ensure gizmo always visible on top
@@ -230,23 +236,24 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
         const csg: any = await import('three-bvh-csg');
         for (let i = 0; i < items.length; i++) {
           for (let j = i + 1; j < items.length; j++) {
+            // bake world transforms into geometry for robust CSG
             const srcA = items[i].mesh;
             const srcB = items[j].mesh;
-            const a = srcA.clone(true);
-            const b = srcB.clone(true);
-            a.material = new THREE.MeshBasicMaterial({ color: 0xffffff });
-            b.material = new THREE.MeshBasicMaterial({ color: 0xffffff });
-            a.updateMatrixWorld(true);
-            b.updateMatrixWorld(true);
-            a.updateMatrix();
-            b.updateMatrix();
+            srcA.updateMatrixWorld(true);
+            srcB.updateMatrixWorld(true);
+            const geoA: any = (srcA.geometry ?? srcA.children?.[0]?.geometry)?.clone();
+            const geoB: any = (srcB.geometry ?? srcB.children?.[0]?.geometry)?.clone();
+            if (!geoA || !geoB) continue;
+            geoA.applyMatrix4(srcA.matrixWorld);
+            geoB.applyMatrix4(srcB.matrixWorld);
+            const a = new THREE.Mesh(geoA, new THREE.MeshBasicMaterial({ color: 0xffffff }));
+            const b = new THREE.Mesh(geoB, new THREE.MeshBasicMaterial({ color: 0xffffff }));
             const inter = csg.intersect ? csg.intersect(a, b) : (csg.CSG ? csg.CSG.intersect(a, b) : null);
             if (inter && (inter as any).geometry) {
-              (inter as any).updateMatrixWorld?.(true);
-              const g = (inter as any).geometry.clone();
-              g.applyMatrix4((inter as any).matrixWorld ?? new THREE.Matrix4());
-              const edges = new THREE.EdgesGeometry(g);
-              const mat = new THREE.LineBasicMaterial({ color: 0xff2d2d, linewidth: 3, depthTest: false, transparent: true, opacity: 1 });
+              const g = (inter as any).geometry;
+              // show all edge segments (threshold 0 to avoid skipping shallow angles)
+              const edges = new THREE.EdgesGeometry(g, 0);
+              const mat = new THREE.LineBasicMaterial({ color: 0xff2d2d, linewidth: 3, depthTest: false, depthWrite: false, transparent: true, opacity: 1 });
               const line = new THREE.LineSegments(edges, mat);
               (line as any).renderOrder = 998;
               ig.add(line);
@@ -258,7 +265,7 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
       }
     }
     compute();
-  }, [items, showIntersections]);
+  }, [items, showIntersections, rev]);
 
   // click to select
   useEffect(() => {
