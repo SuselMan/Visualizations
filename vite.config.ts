@@ -7,6 +7,13 @@ import svgr from 'vite-plugin-svgr';
 export default defineConfig({
   base: '/Visualizations/',
   plugins: [react(), svgr()],
+  optimizeDeps: {
+    include: [
+      'three',
+      'three/examples/jsm/controls/OrbitControls.js',
+      'three/examples/jsm/controls/TransformControls.js',
+    ],
+  },
   resolve: {
     dedupe: ['three'],
     alias: {
