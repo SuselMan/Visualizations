@@ -135,6 +135,7 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
     const orbit = orbitRef.current!;
     if (mode === 'camera') {
       transform.detach();
+      (transform as any).enabled = false;
       transform.visible = false;
       if (orbit) orbit.enabled = true;
       return;
@@ -147,6 +148,7 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
       transform.attach(item.mesh);
       transform.setMode(mode);
       (transform as any).showX = (transform as any).showY = (transform as any).showZ = true;
+      (transform as any).enabled = true;
       transform.visible = true;
     }
   }, [selectedId, items, mode]);
