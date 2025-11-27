@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
+import { OrbitControls, TransformControls } from 'three-stdlib';
 
 type ShapeKind = 'cube' | 'cylinder' | 'cone';
 type Item = {

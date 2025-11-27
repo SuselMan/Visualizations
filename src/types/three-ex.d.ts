@@ -40,4 +40,28 @@ declare module 'three/examples/jsm/controls/TransformControls.js' {
   }
 }
 
+declare module 'three-stdlib' {
+  import { Camera, EventDispatcher, Object3D, Vector3 } from 'three';
+  export class OrbitControls extends EventDispatcher {
+    constructor(object: Camera, domElement?: HTMLElement);
+    enabled: boolean;
+    target: Vector3;
+    enableDamping: boolean;
+    dampingFactor: number;
+    enableZoom: boolean;
+    enablePan: boolean;
+    update(): void;
+    dispose(): void;
+  }
+  export class TransformControls extends EventDispatcher {
+    constructor(object: Camera, domElement?: HTMLElement);
+    attach(object: Object3D): void;
+    detach(): void;
+    setMode(mode: 'translate' | 'rotate' | 'scale'): void;
+    setSize(size: number): void;
+    visible: boolean;
+    dispose(): void;
+  }
+}
+
 
