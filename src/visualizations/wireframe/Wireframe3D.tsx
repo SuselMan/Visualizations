@@ -111,9 +111,9 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
     if (kind === 'cube') {
       geom = new THREE.BoxGeometry(100, 100, 100);
     } else if (kind === 'cylinder') {
-      geom = new THREE.CylinderGeometry(60, 60, 140, 32, 1, true);
+      geom = new THREE.CylinderGeometry(60, 60, 140, 32, 1, false);
     } else {
-      geom = new THREE.ConeGeometry(70, 140, 32, 1, true);
+      geom = new THREE.ConeGeometry(70, 140, 32, 1, false);
     }
     const mesh = new THREE.Mesh(geom, material);
     mesh.position.set((Math.random() - 0.5) * 300, 50, (Math.random() - 0.5) * 300);
