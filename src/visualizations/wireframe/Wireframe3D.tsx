@@ -60,7 +60,17 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
       setRev(r => r + 1);
       if (onSceneChange) onSceneChange();
     });
-    scene.add(transform);
+    try {
+      // Some environments may end up with duplicate three instances.
+      // Guard against crash if TransformControls is from a different prototype chain.
+      if (transform && (transform as any).isObject3D) {
+        scene.add(transform as any);
+      } else {
+        console.warn('TransformControls is not a THREE.Object3D (likely duplicate three). Gizmo disabled.');
+      }
+    } catch (err) {
+      console.warn('Failed to add TransformControls to scene (duplicate three instance). Gizmo disabled.', err);
+    }
     // ensure gizmo always visible on top
     (transform as any).traverse?.((obj: any) => {
       if (obj && obj.material) {
