@@ -24,6 +24,7 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [items, setItems] = useState<Item[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const modeRef = useRef(mode);
   const sceneRef = useRef<any>(null);
   const rendererRef = useRef<any>(null);
   const cameraRef = useRef<any>(null);
@@ -50,7 +51,8 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
     const transform = new TransformControls(camera, renderer.domElement);
     transform.setSize(0.9);
     (transform as any).addEventListener('dragging-changed', (e: any) => {
-      orbit.enabled = !e.value;
+      // Keep orbit disabled in object modes; enable only in camera mode
+      orbit.enabled = (modeRef.current === 'camera');
     });
     scene.add(transform);
     const grid = new THREE.GridHelper(2000, 40, 0xcccccc, 0xeaeaea);
@@ -130,15 +132,22 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
   // selection + transform
   useEffect(() => {
     const transform = transformRef.current!;
+    const orbit = orbitRef.current!;
+    if (mode === 'camera') {
+      transform.detach();
+      transform.visible = false;
+      if (orbit) orbit.enabled = true;
+      return;
+    }
+    if (orbit) orbit.enabled = false;
     transform.detach();
     if (!selectedId) return;
     const item = items.find(i => i.id === selectedId);
     if (item) {
-      if (mode !== 'camera') {
-        transform.attach(item.mesh);
-        transform.setMode(mode);
-        transform.showX = transform.showY = transform.showZ = true;
-      }
+      transform.attach(item.mesh);
+      transform.setMode(mode);
+      (transform as any).showX = (transform as any).showY = (transform as any).showZ = true;
+      transform.visible = true;
     }
   }, [selectedId, items, mode]);
 
