@@ -11,6 +11,9 @@
   },
   "dependencies": {
     "clsx": "2.1.1",
+    "three": "0.169.0",
+    "three-mesh-bvh": "0.7.6",
+    "three-bvh-csg": "0.0.13",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-router-dom": "7.9.5",

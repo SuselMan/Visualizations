@@ -33,6 +33,14 @@ export default function Home() {
           </div>
         </Card>
       </Link>
+      <Link to="/visualizations/wireframe-3d" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <Card className={styles.clickable}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ fontWeight: 600 }}>Wireframe 3D (Cube / Cylinder / Cone)</div>
+            <div style={{ color: '#555' }}>Add and transform shapes; rotate camera; see intersection curves in red.</div>
+          </div>
+        </Card>
+      </Link>
     </div>
   );
 }
