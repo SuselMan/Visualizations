@@ -106,7 +106,7 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
   // add a shape
   function addShape(kind: ShapeKind) {
     const scene = sceneRef.current!;
-    const material = new THREE.MeshBasicMaterial({ color: 0x1a1a1a, wireframe: false, transparent: true, opacity: 0 });
+    const material = new THREE.MeshBasicMaterial({ color: 0x1a1a1a, wireframe: false, transparent: true, opacity: 0, depthWrite: false });
     let geom: any;
     if (kind === 'cube') {
       geom = new THREE.BoxGeometry(100, 100, 100);
@@ -230,20 +230,25 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
         const csg: any = await import('three-bvh-csg');
         for (let i = 0; i < items.length; i++) {
           for (let j = i + 1; j < items.length; j++) {
-            const a = items[i].mesh.clone();
-            const b = items[j].mesh.clone();
+            const srcA = items[i].mesh;
+            const srcB = items[j].mesh;
+            const a = srcA.clone(true);
+            const b = srcB.clone(true);
+            a.material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            b.material = new THREE.MeshBasicMaterial({ color: 0xffffff });
             a.updateMatrixWorld(true);
             b.updateMatrixWorld(true);
             a.updateMatrix();
             b.updateMatrix();
-            // give opaque material temporarily for CSG
-            (a.material as any).opacity = 1;
-            (b.material as any).opacity = 1;
             const inter = csg.intersect ? csg.intersect(a, b) : (csg.CSG ? csg.CSG.intersect(a, b) : null);
             if (inter && (inter as any).geometry) {
-              const edges = new THREE.EdgesGeometry((inter as any).geometry);
-              const mat = new THREE.LineBasicMaterial({ color: 0xff2d2d, linewidth: 3, depthTest: false });
+              (inter as any).updateMatrixWorld?.(true);
+              const g = (inter as any).geometry.clone();
+              g.applyMatrix4((inter as any).matrixWorld ?? new THREE.Matrix4());
+              const edges = new THREE.EdgesGeometry(g);
+              const mat = new THREE.LineBasicMaterial({ color: 0xff2d2d, linewidth: 3, depthTest: false, transparent: true, opacity: 1 });
               const line = new THREE.LineSegments(edges, mat);
+              (line as any).renderOrder = 998;
               ig.add(line);
             }
           }
