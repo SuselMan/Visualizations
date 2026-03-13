@@ -3,6 +3,8 @@ import { Card } from 'ui-kit';
 import styles from './Home.module.css';
 import cubeImg from '@/public/cube.png';
 import shadowsImg from '@/public/shadows.png';
+import wireframeImg from '@/public/wireframe.png';
+import twoToriImg from '@/public/torus.png';
 
 export default function Home() {
   return (
@@ -25,19 +27,21 @@ export default function Home() {
           </div>
         </Card>
       </Link>
-      <Link to="/visualizations/ellipse-practice" style={{ textDecoration: 'none', color: 'inherit' }}>
-        <Card className={styles.clickable}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <div style={{ fontWeight: 600 }}>Ellipse in Perspective</div>
-            <div style={{ color: '#555' }}>Draw an ellipse inside a perspective square; get accuracy score vs expected.</div>
-          </div>
-        </Card>
-      </Link>
       <Link to="/visualizations/wireframe-3d" style={{ textDecoration: 'none', color: 'inherit' }}>
         <Card className={styles.clickable}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <img className={styles.thumb} src={wireframeImg} alt="Wireframe 3D preview" />
             <div style={{ fontWeight: 600 }}>Wireframe 3D (Cube / Cylinder / Cone)</div>
             <div style={{ color: '#555' }}>Add and transform shapes; rotate camera; see intersection curves in red.</div>
+          </div>
+        </Card>
+      </Link>
+      <Link to="/visualizations/two-tori" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <Card className={styles.clickable}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <img className={styles.thumb} src={twoToriImg} alt="Two tori — intersection curve" />
+            <div style={{ fontWeight: 600 }}>Two Tori — Intersection Curve</div>
+            <div style={{ color: '#555' }}>Two 3D tori with adjustable radii, position, and rotation; red curve shows their intersection.</div>
           </div>
         </Card>
       </Link>
