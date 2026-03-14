@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+type LineSegments = InstanceType<typeof THREE.LineSegments>;
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 
 type ShapeKind = 'cube' | 'cylinder' | 'cone';
@@ -259,7 +261,7 @@ export default function Wireframe3D({ width: W, height: H, onSceneChange, showIn
             gB.applyMatrix4(srcB.matrixWorld);
 
             // Try Evaluator path first (more robust)
-            let interEdges: THREE.LineSegments | null = null;
+            let interEdges: LineSegments | null = null;
             if (csg.Evaluator && csg.Brush && (csg as any).INTERSECTION !== undefined) {
               try {
                 const A = csg.Brush.fromGeometry(gA);
